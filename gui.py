@@ -1,49 +1,57 @@
 import tkinter
-from tkinter import ttk
-from tkinter import Menu
+from tkinter import ttk, Menu
 
-class Gui():
+
+class Main(tkinter.Tk):
 
     def __init__(self):
 
-        # create window object
-        self.window = tkinter.Tk()
-        self.window.iconbitmap(r'Z:\development\python\python.ico')
-        self.window.title('Strong Password')
-        self.window.resizable(False, False)
+        tkinter.Tk.__init__(self) # container
+        mighty = tkinter.Frame(self)
+        mighty.grid(column=0, row=0, padx=10, pady=10)
 
-        # adding a menu bar
-        self.menu_bar = Menu(self.window)
-        self.window.config(menu=self.menu_bar)
+        self.frames = {}
 
-        # adding a file menu to menu bar
-        self.psswd_menu = Menu(self.menu_bar, tearoff=0)
-        self.psswd_menu.add_command(label='Generate')
-        self.psswd_menu.add_separator()
-        self.psswd_menu.add_command(label='Check')
-        self.menu_bar.add_cascade(label="Password", menu=self.psswd_menu)
+        for F in (HomePage, GeneratePage): # add a page here if you add a new one
+            page = F(mighty, self)
+            self.frames[F] = page
+            page.grid(row=0, column=0, sticky = 'nsew')
 
-        # adding a second menu to menu_bar
-        self.help_menu = Menu(self.menu_bar, tearoff=0)
-        self.help_menu.add_command(label='About')
-        self.menu_bar.add_cascade(label='Help', menu=self.help_menu)
+        self.show_frame(HomePage)
 
-        # create inner frame
-        self.mighty = ttk.LabelFrame(self.window)
-        self.mighty.grid(column=0, row=0, padx=8, pady=4)
-
-        self.window.mainloop()
+    def show_frame(self, page): # method that changes the page
+        frame=self.frames[page]
+        frame.tkraise()
 
 
-    # def home(self):
-    #     # create a label
-    #     homeLabel1 = ttk.Label(self.mighty, text="Enter a name:")
-    #     homeLabel1.grid(column=0, row=0)
+class HomePage(tkinter.Frame): # starting page
+
+    def __init__(self, parent, controller):
+
+        tkinter.Frame.__init__(self)
+
+        label = tkinter.Label(self, text='Do you want to check your password or generate one?')
+        label.grid(column=0 ,row=0, columnspan=3, padx=10, pady=10)
+
+        btn1 = tkinter.Button(self, text="Generate",
+                              command=lambda: controller.show_frame(GeneratePage)) # method that changes the page
+        btn1.grid(column=0, row=1, padx=10, pady=30)
+
+        btn2 = tkinter.Button(self, text="Create",
+                              command=lambda: controller.show_frame(GeneratePage)) # method that changes the page
+        btn2.grid(column=2, row=1, padx=10, pady=30)
 
 
+class GeneratePage(tkinter.Frame): # second page
 
-main = Gui()
+    def __init__(self, parent, controller):
+        tkinter.Frame.__init__(self)
+        label = tkinter.Label(self, text='Page One!!!')
+        label.grid(column=0 ,row=0)
 
+
+app = Main()
+app.mainloop()
 
 
 
